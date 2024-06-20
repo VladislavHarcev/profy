@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: profy
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5432/test
+    username: postgres
+    password: apolon2003
+    hikari:
+      schema: migration
+  jpa:
+    hibernate:
+      ddl-auto: none
+    flyway:
+      url: jdbc:postgresql://127.0.0.1:5432/test
+      user: postgres
+      password: apolon2003
+      schemas: migration
+      location: classpath:db/migration
+server:
+  port: 8080
