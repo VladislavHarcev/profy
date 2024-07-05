@@ -1,0 +1,48 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: profy
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5432/profy
+    username: root
+    password: 123
+    hikari:
+      schema: profy
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+  flyway:
+    url: jdbc:postgresql://127.0.0.1:5432/profy
+    user: root
+    password: 123
+    schemas: profy
+    location: classpath:db/migration
+    enabled: true
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    com.profuru: DEBUG
+  file:
+    name: app-info.log
+  path: logs
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  appender:
+    debug:
+      name: DEBUG_LOG
+      file: app-debug.log
+    error:
+      name: ERROR_LOG
+      file: app-error.log
+springdoc:
+  api-docs:
+    enabled: true
+    path: /api-docs
+    paths-to-match: /*
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+  packages-to-scan: 'com.profy.profuru.controllers'
