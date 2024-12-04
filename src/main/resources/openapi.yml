@@ -1,0 +1,208 @@
+openapi: 2.5.0
+servers:
+  - url: http://localhost:8080/
+    description: Локальный сервер разработки
+components:
+  schemas:
+    ExecutorDTO:
+      type: object
+      description: Класс DTO для исполнителя, содержащий информацию для передачи данных.
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор исполнителя.
+        title:
+          type: string
+          description: Имя исполнителя.
+        createDate:
+          type: integer
+          format: int64
+          description: Дата создания записи исполнителя в формате timestamp.
+        orders:
+          type: array
+          description: Список заказов, связанных с исполнителем.
+    OrdersDTO:
+      type: object
+      description: Класс DTO для заказа, содержащий информацию для передачи данных.
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор заказа.
+        title:
+          type: string
+          description: Название заказа.
+        descript:
+          type: string
+          description: Описание заказа.
+        createDate:
+          type: integer
+          format: int64
+          description: Дата создания записи заказа в формате timestamp.
+        executor:
+          type: string
+          format: uuid
+          description: Идентификатор исполнителя, связанного с заказом.
+        customer:
+          type: string
+          format: uuid
+          description: Идентификатор клиента, связанного с заказом.
+        stateId:
+          type: string
+          format: uuid
+          description: Идентификатор состояния заказа.
+    CustomerDTO:
+      type: object
+      description: Класс, представляющий клиента в системе.
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор клиента.
+        title:
+          type: string
+          description: Имя клиента.
+        createDate:
+          type: integer
+          format: int64
+          description: Дата создания записи клиента в формате timestamp.
+        orders:
+          type: array
+          description: Список заказов, связанных с клиентом.
+    Executor:
+      type: object
+      description: Класс, представляющий исполнителя заказов.
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор исполнителя.
+        title:
+          type: string
+          description: Имя исполнителя.
+        orders:
+          type: array
+          description: Список заказов, связанных с исполнителем.
+          items:
+            $ref: '#/components/schemas/Order'
+    Order:
+      type: object
+      description: Класс, представляющий заказ в системе.
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор заказа.
+        executor:
+          $ref: '#/components/schemas/Executor'
+          description: Исполнитель заказа.
+        customer:
+          $ref: '#/components/schemas/Customer'
+          description: Клиент, разместивший заказ.
+        stateId:
+          $ref: '#/components/schemas/State'
+          description: Состояние заказа.
+        title:
+          type: string
+          description: Название заказа.
+        descript:
+          type: string
+          description: Описание заказа.
+    Customer:
+      type: object
+      description: Класс, представляющий клиента в системе.
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор клиента.
+        title:
+          type: string
+          description: Заголовок или обращение клиента.
+        orders:
+          type: array
+          description: Список заказов клиента.
+          items:
+            $ref: '#/components/schemas/Order'
+paths:
+  /orders:
+    get:
+      summary: Получить список всех заказов
+      responses:
+        default:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrdersDTO'
+    post:
+      summary: Создать новый заказ
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrdersDTO'
+      responses:
+        default:
+        '201':
+          description: Заказ успешно создан
+  /orders/{orderId}:
+    get:
+      summary: Получить заказ по ID
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          description: ID заказа для получения
+          schema:
+            type: string
+            format: uuid
+      responses:
+        default:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrdersDTO'
+    put:
+      summary: Обновить заказ по ID
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          description: ID заказа для обновления
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrdersDTO'
+      responses:
+        default:
+        '200':
+          description: Заказ успешно обновлен
+    delete:
+      summary: Удалить заказ по ID
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          description: ID заказа для удаления
+          schema:
+            type: string
+            format: uuid
+      responses:
+        default:
+        '204':
+          description: Заказ успешно удален
+info:
+
